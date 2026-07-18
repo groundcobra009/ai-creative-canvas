@@ -38,15 +38,36 @@ const imageElement = baseElement.extend({
   assetId: z.string().optional(),
 });
 
+const canvasElement = z.discriminatedUnion("type", [textElement, shapeElement, imageElement]);
+
+const artboard = z.object({
+  width: z.number().int().positive().max(8000),
+  height: z.number().int().positive().max(8000),
+  background: z.string(),
+});
+
+const canvasVariant = z.object({
+  id: z.string().min(1),
+  name: z.string().min(1).max(80),
+  direction: z.enum(["photo", "abstract", "typography"]),
+  artboard,
+  elements: z.array(canvasElement).max(500),
+});
+
 export const sceneSchema = z.object({
   version: z.literal(1),
   projectId: z.string().min(1),
   projectName: z.string().min(1).max(160),
-  artboard: z.object({
-    width: z.number().int().positive().max(8000),
-    height: z.number().int().positive().max(8000),
-    background: z.string(),
-  }),
-  elements: z.array(z.discriminatedUnion("type", [textElement, shapeElement, imageElement])).max(500),
+  artboard,
+  elements: z.array(canvasElement).max(500),
+  activeVariantId: z.string().optional(),
+  variants: z.array(canvasVariant).max(12).optional(),
+  noteBrief: z.object({
+    title: z.string().max(300),
+    body: z.string().max(50_000),
+    audience: z.string().max(300),
+    keywords: z.array(z.string().max(80)).max(12),
+    readerValue: z.string().max(500),
+  }).optional(),
   updatedAt: z.string(),
 });

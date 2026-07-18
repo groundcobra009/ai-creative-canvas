@@ -48,6 +48,28 @@ export type ImageElement = BaseCanvasElement & {
 
 export type CanvasElement = TextElement | ShapeElement | ImageElement;
 
+export type NoteDesignDirection = "photo" | "abstract" | "typography";
+
+export type CanvasVariant = {
+  id: string;
+  name: string;
+  direction: NoteDesignDirection;
+  artboard: {
+    width: number;
+    height: number;
+    background: string;
+  };
+  elements: CanvasElement[];
+};
+
+export type NoteBrief = {
+  title: string;
+  body: string;
+  audience: string;
+  keywords: string[];
+  readerValue: string;
+};
+
 export type SceneDocument = {
   version: 1;
   projectId: string;
@@ -58,6 +80,9 @@ export type SceneDocument = {
     background: string;
   };
   elements: CanvasElement[];
+  activeVariantId?: string;
+  variants?: CanvasVariant[];
+  noteBrief?: NoteBrief;
   updatedAt: string;
 };
 

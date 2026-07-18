@@ -3,14 +3,17 @@
 import { create } from "zustand";
 import {
   addSceneElement,
+  applyCanvasVariants,
   cloneScene,
   createDefaultScene,
   removeSceneElement,
   renameProject,
   reorderSceneElement,
+  switchCanvasVariant,
+  syncActiveVariant,
   updateSceneElement,
 } from "./document";
-import type { CanvasElement, SceneDocument } from "./types";
+import type { CanvasElement, CanvasVariant, NoteBrief, SceneDocument } from "./types";
 
 const HISTORY_LIMIT = 60;
 
@@ -29,6 +32,8 @@ type EditorState = {
   removeSelected: () => void;
   duplicateSelected: () => void;
   reorderSelected: (direction: "forward" | "backward") => void;
+  setVariants: (variants: CanvasVariant[], noteBrief: NoteBrief) => void;
+  switchVariant: (variantId: string) => void;
   setProjectName: (name: string) => void;
   undo: () => void;
   redo: () => void;
@@ -45,7 +50,7 @@ function commit(
   }
 
   return {
-    scene: nextScene,
+    scene: syncActiveVariant(nextScene),
     past: [...state.past.slice(-(HISTORY_LIMIT - 1)), cloneScene(state.scene)],
     future: [],
     dirty: true,
@@ -106,6 +111,16 @@ export const useEditorStore = create<EditorState>((set, get) => ({
     if (!selectedId) return;
     set((state) => commit(state, reorderSceneElement(state.scene, selectedId, direction)));
   },
+  setVariants: (variants, noteBrief) =>
+    set((state) => ({
+      ...commit(state, applyCanvasVariants(state.scene, variants, noteBrief)),
+      selectedId: null,
+    })),
+  switchVariant: (variantId) =>
+    set((state) => ({
+      ...commit(state, switchCanvasVariant(state.scene, variantId)),
+      selectedId: null,
+    })),
   setProjectName: (name) =>
     set((state) => commit(state, renameProject(state.scene, name))),
   undo: () =>

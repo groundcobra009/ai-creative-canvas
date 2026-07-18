@@ -268,6 +268,31 @@ export function CanvasStage({ registerExporter }: CanvasStageProps) {
             />
             {scene.elements.map(renderElement)}
           </Group>
+          {scene.variants?.length ? (
+            <>
+              <Rect
+                x={64}
+                y={48}
+                width={1152}
+                height={574}
+                stroke="#6657d9"
+                strokeWidth={2}
+                dash={[10, 8]}
+                opacity={0.5}
+                listening={false}
+              />
+              <Text
+                x={76}
+                y={56}
+                text="SAFE AREA"
+                fontSize={14}
+                fontStyle="bold"
+                fill="#6657d9"
+                opacity={0.7}
+                listening={false}
+              />
+            </>
+          ) : null}
           <Transformer
             ref={transformerRef}
             rotateEnabled
