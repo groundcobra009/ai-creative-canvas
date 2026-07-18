@@ -118,6 +118,37 @@ button:focus-visible, input:focus-visible, textarea:focus-visible, select:focus-
 .advanced-generation > summary { color: #6a7381; cursor: pointer; font-size: 9px; font-weight: 700; }
 .advanced-generation .generation-panel { margin-top: 11px; }
 
+.agent-panel { margin-top: 13px; border: 1px solid #d8e5e2; border-radius: 14px; background: linear-gradient(155deg, #f3fbf8, #fff 58%); padding: 12px; }
+.agent-heading { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.agent-heading > div { display: flex; align-items: center; gap: 6px; color: #286a59; }
+.agent-heading strong { color: #344a44; font-size: 11px; }
+.agent-heading > span { border-radius: 999px; background: #e3f3ed; padding: 3px 6px; color: #37715f; font-size: 7px; font-weight: 800; }
+.agent-description { margin: 7px 0 0; color: #788982; font-size: 8px; line-height: 1.5; }
+.agent-history { display: flex; max-height: 142px; flex-direction: column; gap: 5px; margin-top: 10px; overflow-y: auto; }
+.agent-history > div { display: flex; align-items: flex-start; gap: 5px; border-radius: 8px; padding: 6px 7px; font-size: 7.5px; line-height: 1.45; }
+.agent-history > div.user { margin-left: 12px; background: #e9e8ff; color: #5754b5; }
+.agent-history > div.assistant { margin-right: 12px; background: #e7f5f0; color: #39705f; }
+.agent-history svg { flex: 0 0 auto; margin-top: 1px; }
+.agent-examples { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 10px; }
+.agent-examples button { border: 1px solid #d9e5e1; border-radius: 999px; background: white; padding: 4px 6px; color: #63756f; cursor: pointer; font-size: 7px; }
+.agent-examples button:hover { border-color: #7cb8a5; color: #28705b; }
+.agent-input { display: flex; flex-direction: column; gap: 4px; margin-top: 9px; color: #71827c; font-size: 8px; font-weight: 700; }
+.agent-input textarea { width: 100%; resize: vertical; border: 1px solid #dce5e2; border-radius: 8px; background: rgba(255,255,255,.9); padding: 7px 8px; color: #34433f; font-size: 9px; line-height: 1.5; }
+.agent-plan-button { display: flex; width: 100%; height: 33px; align-items: center; justify-content: center; gap: 6px; margin-top: 8px; border: 0; border-radius: 9px; background: linear-gradient(135deg, #32866d, #4eab8d); color: white; cursor: pointer; font-size: 9px; font-weight: 750; box-shadow: 0 6px 13px rgb(40 112 89 / 16%); }
+.agent-plan-button:disabled { cursor: wait; opacity: .65; }
+.agent-preview { margin-top: 10px; border: 1px solid #cfe1db; border-radius: 10px; background: white; padding: 9px; }
+.agent-preview-heading { display: flex; align-items: center; gap: 5px; color: #2f755f; }
+.agent-preview-heading strong { font-size: 9px; }
+.agent-preview > p { margin: 7px 0 0; color: #52645e; font-size: 8px; line-height: 1.5; }
+.agent-preview ol { margin: 7px 0 0; padding-left: 18px; color: #596a65; font-size: 7.5px; line-height: 1.55; }
+.agent-warning { display: flex; align-items: flex-start; gap: 4px; margin-top: 7px; border-radius: 6px; background: #fff7e8; padding: 5px 6px; color: #916b26; font-size: 7px; line-height: 1.4; }
+.agent-warning svg { flex: 0 0 auto; }
+.agent-preview-actions { display: grid; grid-template-columns: 1fr 1.2fr; gap: 5px; margin-top: 9px; }
+.agent-preview-actions button { display: flex; height: 29px; align-items: center; justify-content: center; gap: 4px; border: 1px solid #dfe5e3; border-radius: 7px; background: white; color: #6f7b77; cursor: pointer; font-size: 8px; font-weight: 700; }
+.agent-preview-actions button.apply { border-color: #388a70; background: #388a70; color: white; }
+.agent-cancel-job { display: flex; align-items: center; gap: 4px; margin-top: 8px; border: 0; background: transparent; padding: 0; color: #9b625a; cursor: pointer; font-size: 7.5px; }
+.agent-message { margin: 8px 0 0; border-radius: 7px; background: #eaf6f1; padding: 6px 7px; color: #37715f; font-size: 7.5px; line-height: 1.45; }
+
 .generation-panel { margin-top: 18px; border-top: 1px solid #eceef2; padding-top: 16px; }
 .generation-heading-row { display: flex; align-items: center; justify-content: space-between; color: #5654d5; }
 .generation-heading-row > div { display: flex; align-items: center; gap: 7px; }
