@@ -1,6 +1,8 @@
 "use client";
 
 import { create } from "zustand";
+import { executeCanvasCommands } from "@/features/agent/executor";
+import type { ExecutableCanvasCommand } from "@/features/agent/types";
 import {
   addSceneElement,
   applyCanvasVariants,
@@ -34,6 +36,7 @@ type EditorState = {
   reorderSelected: (direction: "forward" | "backward") => void;
   setVariants: (variants: CanvasVariant[], noteBrief: NoteBrief) => void;
   switchVariant: (variantId: string) => void;
+  applyAgentCommands: (commands: ExecutableCanvasCommand[]) => void;
   setProjectName: (name: string) => void;
   undo: () => void;
   redo: () => void;
@@ -121,6 +124,8 @@ export const useEditorStore = create<EditorState>((set, get) => ({
       ...commit(state, switchCanvasVariant(state.scene, variantId)),
       selectedId: null,
     })),
+  applyAgentCommands: (commands) =>
+    set((state) => commit(state, executeCanvasCommands(state.scene, commands))),
   setProjectName: (name) =>
     set((state) => commit(state, renameProject(state.scene, name))),
   undo: () =>
