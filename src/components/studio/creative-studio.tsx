@@ -42,6 +42,9 @@ export function CreativeStudio() {
   const exporterRef = useRef<CanvasExporter | null>(null);
   const [loadError, setLoadError] = useState<string | null>(null);
   const [format, setFormat] = useState<"image/png" | "image/jpeg">("image/png");
+  const [exportState, setExportState] = useState<
+    { status: "idle" | "exporting" | "success" | "error"; message?: string }
+  >({ status: "idle" });
 
   const registerExporter = useCallback((exporter: CanvasExporter | null) => {
     exporterRef.current = exporter;
@@ -114,13 +117,39 @@ export function CreativeStudio() {
     return () => window.removeEventListener("keydown", onKeyDown);
   }, [duplicateSelected, redo, removeSelected, undo]);
 
-  const exportArtboard = () => {
-    const dataUrl = exporterRef.current?.({ mimeType: format, quality: format === "image/jpeg" ? 0.92 : undefined });
-    if (!dataUrl) return;
-    const link = document.createElement("a");
-    link.download = `${scene.projectName || "note-header"}.${format === "image/png" ? "png" : "jpg"}`;
-    link.href = dataUrl;
-    link.click();
+  const exportArtboard = async () => {
+    setExportState({ status: "exporting" });
+    try {
+      const dataUrl = exporterRef.current?.({ mimeType: format, quality: format === "image/jpeg" ? 0.92 : undefined });
+      if (!dataUrl) throw new Error("キャンバスの準備が完了していません");
+      const blob = await fetch(dataUrl).then((response) => response.blob());
+      const bitmap = await createImageBitmap(blob);
+      const dimensionsMatch =
+        bitmap.width === scene.artboard.width && bitmap.height === scene.artboard.height;
+      bitmap.close();
+      if (!dimensionsMatch) {
+        throw new Error("書き出し画像のサイズがアートボードと一致しません");
+      }
+
+      const objectUrl = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.download = `${scene.projectName || "note-header"}.${format === "image/png" ? "png" : "jpg"}`;
+      link.href = objectUrl;
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      window.setTimeout(() => URL.revokeObjectURL(objectUrl), 1000);
+      const sizeKb = Math.max(1, Math.round(blob.size / 1024));
+      setExportState({
+        status: "success",
+        message: `${format === "image/png" ? "PNG" : "JPEG"} ${scene.artboard.width} × ${scene.artboard.height}pxを書き出しました（${sizeKb}KB）`,
+      });
+    } catch (error) {
+      setExportState({
+        status: "error",
+        message: error instanceof Error ? error.message : "書き出しに失敗しました",
+      });
+    }
   };
 
   return (
@@ -140,8 +169,8 @@ export function CreativeStudio() {
         />
         <div className="topbar-actions">
           <span className={`save-status ${saveState}`}>
-            {saveState === "saving" ? <LoaderCircle size={14} className="spin" /> : saveState === "error" ? <Save size={14} /> : <Check size={14} />}
-            {saveState === "saving" ? "保存中" : saveState === "error" ? "保存エラー" : "保存済み"}
+            {!hydrated || saveState === "saving" ? <LoaderCircle size={14} className="spin" /> : saveState === "error" ? <Save size={14} /> : <Check size={14} />}
+            {!hydrated ? "読込中" : saveState === "saving" ? "保存中" : saveState === "error" ? "保存エラー" : "保存済み"}
           </span>
           <button type="button" className="icon-button" title="元に戻す" disabled={!pastLength} onClick={undo}><Undo2 size={18} /></button>
           <button type="button" className="icon-button" title="やり直す" disabled={!futureLength} onClick={redo}><Redo2 size={18} /></button>
@@ -153,11 +182,19 @@ export function CreativeStudio() {
             </select>
             <ChevronDown size={14} />
           </div>
-          <button type="button" className="primary-button" onClick={exportArtboard}><Download size={17} />書き出し</button>
+          <button type="button" className="primary-button" disabled={exportState.status === "exporting"} onClick={exportArtboard}>
+            {exportState.status === "exporting" ? <LoaderCircle size={17} className="spin" /> : <Download size={17} />}
+            {exportState.status === "exporting" ? "作成中" : "書き出し"}
+          </button>
         </div>
       </header>
 
       {loadError ? <div className="load-warning">{loadError}。新規キャンバスで続行します。</div> : null}
+      {exportState.message ? (
+        <div className={`export-notice ${exportState.status}`} role="status" aria-live="polite">
+          {exportState.message}
+        </div>
+      ) : null}
 
       <div className="studio-body">
         <LeftSidebar />

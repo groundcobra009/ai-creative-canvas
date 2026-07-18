@@ -25,9 +25,28 @@ type CanvasStageProps = {
   registerExporter: (exporter: CanvasExporter | null) => void;
 };
 
-function CanvasImage({ element }: { element: ImageElement }) {
+type ElementInteractionProps = {
+  onClick: (event: Konva.KonvaEventObject<MouseEvent>) => void;
+  onTap: (event: Konva.KonvaEventObject<TouchEvent>) => void;
+  onDragEnd: (event: Konva.KonvaEventObject<DragEvent>) => void;
+  onTransformEnd: (event: Konva.KonvaEventObject<Event>) => void;
+};
+
+function CanvasImage({
+  element,
+  interactionProps,
+}: {
+  element: ImageElement;
+  interactionProps: ElementInteractionProps;
+}) {
   const [image] = useImage(element.src, "anonymous");
-  return <KonvaImage image={image} {...sharedNodeProps(element)} />;
+  return (
+    <KonvaImage
+      image={image}
+      {...sharedNodeProps(element)}
+      {...interactionProps}
+    />
+  );
 }
 
 function sharedNodeProps(element: CanvasElement) {
@@ -157,9 +176,11 @@ export function CanvasStage({ registerExporter }: CanvasStageProps) {
 
     if (element.type === "image") {
       return (
-        <Group key={element.id} {...interactionProps}>
-          <CanvasImage element={element} />
-        </Group>
+        <CanvasImage
+          key={element.id}
+          element={element}
+          interactionProps={interactionProps}
+        />
       );
     }
 

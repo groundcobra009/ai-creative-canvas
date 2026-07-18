@@ -61,6 +61,7 @@ button:focus-visible, input:focus-visible, textarea:focus-visible, select:focus-
 .secondary-button:hover, .icon-button:not(:disabled):hover { background: #f4f5f8; }
 .primary-button { border-color: var(--primary); background: var(--primary); color: white; box-shadow: 0 6px 14px rgb(85 84 217 / 18%); }
 .primary-button:hover { background: var(--primary-dark); }
+.primary-button:disabled { cursor: wait; opacity: .72; }
 .export-control { position: relative; gap: 0; padding-right: 7px; }
 .export-control select { height: 100%; appearance: none; border: 0; background: transparent; padding: 0 17px 0 10px; color: #5e6878; font-size: 11px; font-weight: 650; outline: none; }
 .export-control svg { position: absolute; right: 7px; pointer-events: none; }
@@ -127,6 +128,8 @@ button:focus-visible, input:focus-visible, textarea:focus-visible, select:focus-
 .layer-type-icon { display: grid; width: 25px; height: 25px; place-items: center; color: #747d8c; }
 .layer-name { overflow: hidden; border: 0; background: transparent; padding: 0 5px; text-align: left; color: #46505f; font-size: 10px; text-overflow: ellipsis; white-space: nowrap; cursor: pointer; }
 .load-warning { position: fixed; z-index: 50; top: 76px; left: 50%; transform: translateX(-50%); border: 1px solid #f2c9c9; border-radius: 9px; background: #fff5f5; padding: 8px 14px; color: #a64747; font-size: 11px; box-shadow: 0 8px 24px rgb(40 20 20 / 10%); }
+.export-notice { position: fixed; z-index: 50; top: 76px; left: 50%; transform: translateX(-50%); border: 1px solid #b9dfd0; border-radius: 9px; background: #f1fbf7; padding: 8px 14px; color: #267157; font-size: 11px; box-shadow: 0 8px 24px rgb(20 40 30 / 10%); }
+.export-notice.error { border-color: #f2c9c9; background: #fff5f5; color: #a64747; }
 .spin { animation: spin .8s linear infinite; }
 @keyframes spin { to { transform: rotate(360deg); } }
 
