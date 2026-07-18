@@ -11,6 +11,7 @@ import {
   Upload,
 } from "lucide-react";
 import { useRef, useState } from "react";
+import { GenerationPanel } from "@/components/generation/generation-panel";
 import { useEditorStore } from "@/features/canvas/store";
 import type { CanvasElement } from "@/features/canvas/types";
 
@@ -116,13 +117,7 @@ export function LeftSidebar() {
           <p>記事の魅力を、1280 × 670pxの一枚に。</p>
         </div>
 
-        <button className="skill-card" type="button">
-          <span className="skill-card-icon"><Sparkles size={18} /></span>
-          <span>
-            <strong>AIで3案つくる</strong>
-            <small>Phase 3で利用可能になります</small>
-          </span>
-        </button>
+        <GenerationPanel />
 
         <div className="sidebar-section">
           <h3>キャンバスに追加</h3>
