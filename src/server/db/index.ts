@@ -59,6 +59,26 @@ export function getDb(): CanvasDatabase {
     );
     CREATE INDEX IF NOT EXISTS generation_jobs_created_at_idx
       ON generation_jobs(created_at DESC);
+    CREATE TABLE IF NOT EXISTS video_jobs (
+      id TEXT PRIMARY KEY,
+      status TEXT NOT NULL,
+      provider TEXT NOT NULL,
+      model TEXT NOT NULL,
+      prompt TEXT NOT NULL,
+      request_json TEXT NOT NULL,
+      remote_job_id TEXT,
+      result_asset_id TEXT,
+      progress INTEGER NOT NULL DEFAULT 0,
+      error TEXT,
+      attempts INTEGER NOT NULL DEFAULT 0,
+      next_poll_at TEXT,
+      retry_of_job_id TEXT,
+      created_at TEXT NOT NULL,
+      updated_at TEXT NOT NULL,
+      completed_at TEXT
+    );
+    CREATE INDEX IF NOT EXISTS video_jobs_created_at_idx
+      ON video_jobs(created_at DESC);
   `);
 
   const database = drizzle(sqlite, { schema });

@@ -33,3 +33,22 @@ export const generationJobs = sqliteTable("generation_jobs", {
   updatedAt: text("updated_at").notNull(),
   completedAt: text("completed_at"),
 });
+
+export const videoJobs = sqliteTable("video_jobs", {
+  id: text("id").primaryKey(),
+  status: text("status").notNull(),
+  provider: text("provider").notNull(),
+  model: text("model").notNull(),
+  prompt: text("prompt").notNull(),
+  requestJson: text("request_json").notNull(),
+  remoteJobId: text("remote_job_id"),
+  resultAssetId: text("result_asset_id"),
+  progress: integer("progress").notNull(),
+  error: text("error"),
+  attempts: integer("attempts").notNull(),
+  nextPollAt: text("next_poll_at"),
+  retryOfJobId: text("retry_of_job_id"),
+  createdAt: text("created_at").notNull(),
+  updatedAt: text("updated_at").notNull(),
+  completedAt: text("completed_at"),
+});

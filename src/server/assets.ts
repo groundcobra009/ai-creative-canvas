@@ -7,9 +7,11 @@ import { getDb } from "./db";
 import { assets } from "./db/schema";
 
 const ALLOWED_TYPES = new Set(["image/png", "image/jpeg", "image/webp"]);
+const GENERATED_TYPES = new Set([...ALLOWED_TYPES, "video/mp4"]);
 const MAX_UPLOAD_BYTES = 20 * 1024 * 1024;
 
 function extensionFor(mimeType: string) {
+  if (mimeType === "video/mp4") return ".mp4";
   if (mimeType === "image/png") return ".png";
   if (mimeType === "image/webp") return ".webp";
   return ".jpg";
@@ -63,12 +65,16 @@ export async function saveGeneratedAsset(input: {
   mimeType: string;
   name: string;
 }) {
-  if (!ALLOWED_TYPES.has(input.mimeType)) {
-    throw new Error(`未対応の生成画像形式です: ${input.mimeType}`);
+  if (!GENERATED_TYPES.has(input.mimeType)) {
+    throw new Error(`未対応の生成形式です: ${input.mimeType}`);
   }
 
   const id = crypto.randomUUID();
-  const generatedDirectory = path.join(storageRoot(), "generated");
+  const generatedDirectory = path.join(
+    storageRoot(),
+    "generated",
+    input.mimeType === "video/mp4" ? "videos" : "images",
+  );
   const filePath = path.join(
     generatedDirectory,
     `${id}${extensionFor(input.mimeType)}`,

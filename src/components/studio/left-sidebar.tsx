@@ -14,6 +14,7 @@ import { useRef, useState } from "react";
 import { GenerationPanel } from "@/components/generation/generation-panel";
 import { AgentPanel } from "@/components/agent/agent-panel";
 import { NoteSkillPanel } from "@/components/note-skill/note-skill-panel";
+import { VideoPanel } from "@/components/video/video-panel";
 import { useEditorStore } from "@/features/canvas/store";
 import type { CanvasElement } from "@/features/canvas/types";
 
@@ -122,6 +123,11 @@ export function LeftSidebar() {
         <NoteSkillPanel />
 
         <AgentPanel />
+
+        <details className="advanced-video">
+          <summary>Seedanceで動画をつくる</summary>
+          <VideoPanel />
+        </details>
 
         <details className="advanced-generation">
           <summary>AI画像を生成・編集</summary>
