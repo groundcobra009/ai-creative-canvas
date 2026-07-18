@@ -1,12 +1,16 @@
 import { describe, expect, it } from "vitest";
 import {
   addSceneElement,
+  applyCanvasVariants,
   createDefaultScene,
   removeSceneElement,
   reorderSceneElement,
+  switchCanvasVariant,
   updateSceneElement,
 } from "./document";
 import type { TextElement } from "./types";
+import { analyzeNoteBrief } from "../note-skill/analyze";
+import { createNoteVariants } from "../note-skill/layouts";
 
 const textElement: TextElement = {
   id: "test-text",
@@ -48,5 +52,23 @@ describe("scene document operations", () => {
 
     expect(moved.elements.at(-2)?.id).toBe(textElement.id);
     expect(reorderSceneElement(source, source.elements[0].id, "backward")).toBe(source);
+  });
+
+  it("preserves edits when switching between note variants", () => {
+    const analysis = analyzeNoteBrief({
+      title: "AI活用を始めるためのガイド",
+      body: "AIを仕事で使い始めるために必要な考え方と実践手順を、具体的な例と一緒に紹介します。",
+      audience: "はじめてAIを使う人",
+    });
+    const variants = createNoteVariants(analysis.plans, analysis.brief);
+    const initial = applyCanvasVariants(createDefaultScene(), variants, analysis.brief);
+    const title = initial.elements.find((element) => element.name === "タイトル");
+    const edited = updateSceneElement(initial, title!.id, { text: "編集したコピー" });
+    const second = switchCanvasVariant(edited, variants[1].id);
+    const restored = switchCanvasVariant(second, variants[0].id);
+
+    expect(restored.elements.find((element) => element.id === title!.id)).toMatchObject({
+      text: "編集したコピー",
+    });
   });
 });

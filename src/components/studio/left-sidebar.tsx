@@ -12,6 +12,7 @@ import {
 } from "lucide-react";
 import { useRef, useState } from "react";
 import { GenerationPanel } from "@/components/generation/generation-panel";
+import { NoteSkillPanel } from "@/components/note-skill/note-skill-panel";
 import { useEditorStore } from "@/features/canvas/store";
 import type { CanvasElement } from "@/features/canvas/types";
 
@@ -117,7 +118,12 @@ export function LeftSidebar() {
           <p>記事の魅力を、1280 × 670pxの一枚に。</p>
         </div>
 
-        <GenerationPanel />
+        <NoteSkillPanel />
+
+        <details className="advanced-generation">
+          <summary>AI画像を生成・編集</summary>
+          <GenerationPanel />
+        </details>
 
         <div className="sidebar-section">
           <h3>キャンバスに追加</h3>

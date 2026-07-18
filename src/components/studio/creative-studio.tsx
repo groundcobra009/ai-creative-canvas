@@ -15,9 +15,11 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import type { CanvasExporter } from "@/components/canvas/canvas-stage";
 import { useEditorStore } from "@/features/canvas/store";
 import type { ProjectPayload } from "@/features/canvas/types";
+import { inspectNoteExport } from "@/features/export/validation";
 import { InspectorPanel } from "./inspector-panel";
 import { LayersPanel } from "./layers-panel";
 import { LeftSidebar } from "./left-sidebar";
+import { VariantStrip } from "./variant-strip";
 
 const CanvasStage = dynamic(
   () => import("@/components/canvas/canvas-stage").then((module) => module.CanvasStage),
@@ -124,11 +126,15 @@ export function CreativeStudio() {
       if (!dataUrl) throw new Error("キャンバスの準備が完了していません");
       const blob = await fetch(dataUrl).then((response) => response.blob());
       const bitmap = await createImageBitmap(blob);
-      const dimensionsMatch =
-        bitmap.width === scene.artboard.width && bitmap.height === scene.artboard.height;
-      bitmap.close();
-      if (!dimensionsMatch) {
-        throw new Error("書き出し画像のサイズがアートボードと一致しません");
+      let inspection;
+      try {
+        inspection = inspectNoteExport({
+          width: bitmap.width,
+          height: bitmap.height,
+          bytes: blob.size,
+        });
+      } finally {
+        bitmap.close();
       }
 
       const objectUrl = URL.createObjectURL(blob);
@@ -139,10 +145,9 @@ export function CreativeStudio() {
       link.click();
       link.remove();
       window.setTimeout(() => URL.revokeObjectURL(objectUrl), 1000);
-      const sizeKb = Math.max(1, Math.round(blob.size / 1024));
       setExportState({
         status: "success",
-        message: `${format === "image/png" ? "PNG" : "JPEG"} ${scene.artboard.width} × ${scene.artboard.height}pxを書き出しました（${sizeKb}KB）`,
+        message: `${format === "image/png" ? "PNG" : "JPEG"} ${scene.artboard.width} × ${scene.artboard.height}pxを書き出しました（${inspection.sizeKb}KB・10MB以下）`,
       });
     } catch (error) {
       setExportState({
@@ -197,12 +202,13 @@ export function CreativeStudio() {
       ) : null}
 
       <div className="studio-body">
-        <LeftSidebar />
+        <LeftSidebar key={hydrated ? scene.projectId : "loading"} />
         <section className="canvas-workspace">
           <div className="workspace-meta">
             <div><FileImage size={15} /><span>note 見出し画像</span></div>
             <span>{scene.artboard.width} × {scene.artboard.height}px</span>
           </div>
+          <VariantStrip />
           {!hydrated ? <div className="canvas-loading">プロジェクトを読み込んでいます…</div> : <CanvasStage registerExporter={registerExporter} />}
         </section>
         <aside className="right-sidebar">
